@@ -128,6 +128,7 @@ const productionConfig = merge([
       name: 'img/[name].[hash].[ext]',
     },
   }),
+  parts.setFreeVariable('process.env', parts.appVersion()),
   // Lint and Flow type check are not enabled for production because CI has
   // explicit lint stages
 ]);

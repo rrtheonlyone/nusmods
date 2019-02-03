@@ -1,0 +1,32 @@
+FROM node:10-alpine
+
+# Installs latest Chromium (71) package.
+RUN apk update && apk upgrade && \
+    echo @edge http://nl.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories && \
+    echo @edge http://nl.alpinelinux.org/alpine/edge/main >> /etc/apk/repositories && \
+    apk add --no-cache \
+      chromium@edge \
+      harfbuzz@edge \
+      nss@edge
+
+# Tell Puppeteer to skip installing Chrome. We'll be using the installed package.
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+
+# Add user so we don't need --no-sandbox.
+RUN addgroup -S pptruser && adduser -S -g pptruser pptruser \
+    && mkdir -p /home/pptruser/Downloads \
+    && chown -R pptruser:pptruser /home/pptruser
+
+ADD https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_amd64 /usr/local/bin/dumb-init
+RUN chmod +x /usr/local/bin/dumb-init
+
+# Run everything after as non-privileged user.
+USER pptruser
+
+RUN mkdir -p /home/pptruser/app
+WORKDIR /home/pptruser/app
+
+COPY export/package.json export/yarn.lock ./
+
+ENTRYPOINT ["dumb-init", "--"]
+CMD yarn && yarn start

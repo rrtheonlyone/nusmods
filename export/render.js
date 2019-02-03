@@ -21,6 +21,7 @@ async function launch() {
   const browser = await puppeteer.launch({
     executablePath,
     devtools: !!process.env.DEVTOOLS,
+    args: ['--disable-dev-shm-usage', '--no-sandbox'],
   });
 
   const page = await browser.newPage();
@@ -65,7 +66,7 @@ async function injectData(page, data) {
   const modules = await getModules(moduleCodes);
 
   await page.evaluate(`
-    new Promise((resolve) => 
+    new Promise((resolve) =>
       window.setData(${JSON.stringify(modules)}, ${JSON.stringify(data)}, resolve)
     )
   `);

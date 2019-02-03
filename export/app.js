@@ -128,7 +128,7 @@ render.launch()
       app.context.pageContent = await fs.readFile(config.page, 'utf-8');
     }
 
-    const server = app.listen(process.env.PORT || 3000);
+    const server = app.listen(process.env.PORT || 3000, process.env.HOST);
     console.log('Export server started');
 
     gracefulShutdown(server);

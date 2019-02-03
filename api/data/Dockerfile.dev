@@ -1,0 +1,11 @@
+FROM node:10-alpine
+
+RUN apk update && \
+    apk add --no-cache build-base python sqlite
+
+RUN mkdir -p /home/node/app
+WORKDIR /home/node/app
+
+COPY api/data/package.json api/data/yarn.lock ./
+
+CMD yarn && yarn start

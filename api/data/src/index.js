@@ -23,7 +23,7 @@ function makeServer() {
 }
 
 let serverInstance = makeServer();
-serverInstance.listen(process.env.PORT).then(({ url }) => {
+serverInstance.listen(process.env.PORT, process.env.HOST).then(({ url }) => {
   log.info(`🚀  Server ready at ${url}`);
 });
 
