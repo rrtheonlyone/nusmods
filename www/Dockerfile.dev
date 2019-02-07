@@ -6,4 +6,6 @@ RUN apk update && \
 RUN mkdir -p /home/node/app
 WORKDIR /home/node/app
 
+COPY .prettierrc.js .
+
 CMD yarn && yarn start

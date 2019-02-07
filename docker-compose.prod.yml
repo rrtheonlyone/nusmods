@@ -1,0 +1,69 @@
+version: "3.5"
+services:
+  web:
+    build:
+      context: .
+      dockerfile: www/Dockerfile.dev
+    volumes:
+      - yarn:/home/node/.cache/yarn
+      - ./www:/home/node/app
+      - ./.prettierrc.js:/home/node/app/.prettierrc.js
+    expose:
+      - "8080"
+    environment:
+      - NODE_ENV=development
+      - PORT=8080
+      - HOST=0.0.0.0
+    restart: on-failure
+  export:
+    build:
+      context: .
+      dockerfile: export/Dockerfile.dev
+    volumes:
+      - yarn:/home/pptruser/.cache/yarn
+      - ./export:/home/pptruser/app
+      - ./.prettierrc.js:/home/pptruser/app/.prettierrc.js
+    expose:
+      - "8082"
+    environment:
+      - NODE_ENV=development
+      - PORT=8082
+      - HOST=0.0.0.0
+    restart: on-failure
+  api:
+    build:
+      context: .
+      dockerfile: api/data/Dockerfile.dev
+    volumes:
+      - yarn:/home/node/.cache/yarn
+      - ./api/data:/home/node/app
+      - ./.prettierrc.js:/home/node/app/.prettierrc.js
+    expose:
+      - "8081"
+    environment:
+      - NODE_ENV=development
+      - PORT=8081
+      - HOST=0.0.0.0
+    restart: on-failure
+  proxy:
+    image: nginx:1.14-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./proxy/nginx.dev.conf:/etc/nginx/nginx.conf
+    secrets:
+      - "server.key"
+      - "server.crt"
+    depends_on:
+      - web
+    restart: on-failure
+
+volumes:
+  yarn:
+
+secrets:
+  "server.key":
+    file: ./proxy/server.key
+  "server.crt":
+    file: ./proxy/server.crt
