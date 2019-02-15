@@ -64,7 +64,7 @@
       "groupName": "state-management"
     }
   ],
-  "excludePackageNames": ["query-string"],
+  "ignoreDeps": ["query-string"],
   "pathRules": [
     {
       "paths": ["packages/**"],
